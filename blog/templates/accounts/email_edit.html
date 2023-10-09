@@ -1,12 +1,13 @@
 {% extends 'parent/base.html' %}
+
 {% block title %}
-    user-sign-up
+    email-edit
 {% endblock %}
+
 {% block content %}
-    <h2>ثبت نام</h2>
-    <form method="POST">
+    <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">ثبت نام</button>
+        <button type="submit">تایید ایمیل</button>
     </form>
 {% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'parent/base.html' %}
+{% load jalali_tags %}
+{% load static %}
+{% block title %}
+    date-of-birth-edit
+{% endblock %}
+{% block content %}
+    <h2>تغییر تاریخ تولد</h2>
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">ذخیره تغییرات</button>
+    </form>
+    <link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
+    <script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
+{% endblock %}

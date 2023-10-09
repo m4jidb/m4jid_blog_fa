@@ -1,0 +1,23 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    post-create
+{% endblock %}
+
+{% block content %}
+    <h2>ایجاد پست جدید</h2>
+
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    {{ formset.management_form }}
+    {% for image_form in formset %}
+        {{ image_form.as_p }}
+    {% endfor %}
+
+    <button type="submit">ایجاد پست</button>
+    </form>
+
+    <a href="{% url 'blog:index' %}">لغو</a>
+{% endblock %}

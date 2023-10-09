@@ -1,0 +1,13 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    profile
+{% endblock %}
+
+{% block content %}
+    <h2>حساب کاربری</h2>
+    <br>
+    <h3><a href="{% url 'blog:user_account_information' %}">اطلاعات حساب کاربری</a></h3>
+    <h3><a href="{% url 'blog:user_post_list' %}">پستها</a></h3>
+    <h3><a href="{% url 'blog:user_ticket_list' %}">تیکت ها</a></h3>
+{% endblock %}

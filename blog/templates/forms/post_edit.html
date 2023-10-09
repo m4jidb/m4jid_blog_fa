@@ -1,0 +1,19 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    post-edit
+{% endblock %}
+
+{% block content %}
+    <h2>ویرایش پست</h2>
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ formset.management_form }}
+    {% for f in formset %}
+        {{ f.as_p }}
+    {% endfor %}
+    <button type="submit">زخیره تغییرات</button>
+    </form>
+    <p><a href="{% url 'blog:post_detail' slug=post.slug %}">بازگشت به پست</a></p>
+{% endblock %}

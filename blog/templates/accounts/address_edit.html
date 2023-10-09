@@ -1,0 +1,12 @@
+{% extends 'parent/base.html' %}
+{% block title %}
+    address-edit
+{% endblock %}
+{% block content %}
+    <h2>تغییر آدرس</h2>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">زخیره تغییرات</button>
+    </form>
+{% endblock %}

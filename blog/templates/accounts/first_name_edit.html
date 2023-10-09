@@ -1,0 +1,12 @@
+{% extends 'parent/base.html' %}
+{% block title %}
+    first-name-edit
+{% endblock %}
+{% block content %}
+    <h2>تغییر نام</h2>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">زخیره تغییرات</button>
+    </form>
+{% endblock %}

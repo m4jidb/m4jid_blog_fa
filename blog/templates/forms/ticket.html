@@ -1,0 +1,15 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    ticket
+{% endblock %}
+
+{% block content %}
+    <h2>ارسال تیکت</h2>
+    <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ file_form.as_p }}
+    <button type="submit">ارسال</button>
+</form>
+{% endblock %}

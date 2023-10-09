@@ -1,0 +1,26 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    ticket-detail
+{% endblock %}
+
+{% block content %}
+    <h2><strong>عنوان تیکت : </strong>{{ ticket.title }}</h2>
+    <p><strong>متن تیکت : </strong>{{ ticket.content }}</p>
+    <p><strong>وضعیت : </strong>{{ ticket.status }}</p>
+    <p><strong>اولویت : </strong>{{ ticket.priority }}</p>
+    <p><strong>تاریخ ارسال : </strong>{{ ticket.created_at|date:'y/m/d' }}</p>
+    {% for attachment in ticket.ticket_attachments.all %}
+        <div>
+            <h3><strong>پیوست : </strong>{{ attachment.alt }}</h3>
+            {% if attachment.file %}
+                <a href="{{ attachment.file.url }}">دانلود</a>
+            {% else %}
+                <p>هیچ فایلی آپلود نشد</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+    {% if ticket.assigned_to %}
+        <p><strong>مسعول پاسخ : </strong>{{ ticket.assigned_to.username }}</p>
+    {% endif %}
+{% endblock %}

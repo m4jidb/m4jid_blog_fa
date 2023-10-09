@@ -1,0 +1,34 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    post-detail
+{% endblock %}
+
+{% block content %}
+    <h2>{{ post.title }}</h2>
+    {% if post.post_images.all %}
+        {% for image in post.post_images.all %}
+            {% if image.image_file %}
+                <img src="{{ image.image_file.url }}" alt="{{ image.alt }}">
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% spaceless %}
+        <p>{{ post.content|linebreaks }}</p>
+    {% endspaceless %}
+    <p>نویسنده: {{ post.author.username }}</p>
+    <a href="{% url 'blog:comment_add' slug=post.slug %}">نظر خود را اضافه کنید</a>
+    <h3>نظرات</h3>
+    {% for comment in post.comments.all %}
+        <div>
+            <p>{{ comment.author }} _ {{ comment.created_at|date:'y/m/d' }} :</p>
+            <p>{{ comment.content }}</p>
+        </div>
+    {% empty %}
+        <p>هنوز نظری وجود ندارد.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated and user == post.author %}
+        <p><a href="{% url 'blog:post_edit' slug=post.slug %}">ویرایش این پست</a></p>
+    {% endif %}
+{% endblock %}

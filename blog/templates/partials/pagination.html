@@ -1,0 +1,29 @@
+<div>
+    {% if posts.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ posts.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    {% if posts.number > 3 %}
+        <span>...</span>
+    {% endif %}
+
+    {% for i in posts.paginator.page_range %}
+        {% if i > posts.number|add:"-3" and i < posts.number|add:"3" %}
+            {% if i == posts.number %}
+                <span>{{ i }}</span>
+            {% else %}
+                <a href="?page={{ i }}">{{ i }}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if posts.number < posts.paginator.num_pages|add:"-2" %}
+        <span>...</span>
+    {% endif %}
+
+    {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}">Next</a>
+        <a href="?page={{ posts.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>

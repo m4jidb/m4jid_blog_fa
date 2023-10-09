@@ -1,0 +1,29 @@
+<div>
+    {% if tivkets.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ tickets.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    {% if tickets.number > 3 %}
+        <span>...</span>
+    {% endif %}
+
+    {% for i in tickets.paginator.page_range %}
+        {% if i > tickets.number|add:"-3" and i < tickets.number|add:"3" %}
+            {% if i == tickets.number %}
+                <span>{{ i }}</span>
+            {% else %}
+                <a href="?page={{ i }}">{{ i }}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if tickets.number < tickets.paginator.num_pages|add:"-2" %}
+        <span>...</span>
+    {% endif %}
+
+    {% if tickets.has_next %}
+        <a href="?page={{ tickets.next_page_number }}">Next</a>
+        <a href="?page={{ tickets.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>

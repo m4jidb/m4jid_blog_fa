@@ -4,11 +4,14 @@ from django_jalali.db import models as jmodels
 from django_resized import ResizedImageField
 from django.utils import timezone
 from django.template.defaultfilters import slugify
+from taggit.managers import TaggableManager
+from taggit.models import TagBase, GenericTaggedItemBase
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name='کاربر')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile_user')
     phone = models.CharField(max_length=20, verbose_name='شماره تلفن')
+    birthday = jmodels.jDateTimeField(null=True, blank=True, verbose_name='تاریخ تولد')
     address = models.CharField(max_length=250, verbose_name='آدرس')
     city = models.CharField(max_length=200, verbose_name='شهر')
     state = models.CharField(max_length=200, verbose_name='استان')
@@ -41,7 +44,7 @@ class ProfileImage(models.Model):
         size=[500, 500],
         crop=['middle', 'center'],
         quality=75,
-        upload_to='media/profile_images',
+        upload_to='profile_img/',
         blank=True,
         verbose_name='تصویر پروفایل'
     )
@@ -66,15 +69,46 @@ class ProfileImage(models.Model):
         return self.alt if self.alt else "None"
 
 
+class CustomTag(TagBase):
+    description = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        verbose_name = "برچسب"
+        verbose_name_plural = "برچسب ها"
+
+
+class CustomCategory(TagBase):
+    description = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        verbose_name = "دسته بندی"
+        verbose_name_plural = "دسته بندی ها"
+
+
+class TaggedPost(GenericTaggedItemBase):
+    tag = models.ForeignKey(
+        CustomTag,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_items",
+    )
+
+
+class CategorizedPost(GenericTaggedItemBase):
+    tag = models.ForeignKey(
+        CustomCategory,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_items",
+    )
+
+
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(status='published')
+        return super().get_queryset().filter(status='منتشر شده')
 
 
 class Post(models.Model):
-
     STATUS_CHOICES = [
-        ('یش نویس', 'پیش نویس'),
+        ('پیش نویس', 'پیش نویس'),
         ('منتشر شده', 'منتشر شده'),
         ('رد شده', 'رد شده'),
     ]
@@ -84,16 +118,18 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', verbose_name='نویسنده')
     slug = models.SlugField(max_length=200, unique=True, verbose_name='اسلاگ')
     created_at = jmodels.jDateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
-    published_at = jmodels.jDateTimeField(default=timezone.now, verbose_name='آخر آماء خوانة')
+    published_at = jmodels.jDateTimeField(default=timezone.now, verbose_name='تاریخ انتشار')
     updated_at = jmodels.jDateTimeField(auto_now=True, verbose_name='تاریخ بروزرسانی')
     is_deleted = models.BooleanField(default=False, verbose_name='حذف شده')
     deleted_at = jmodels.jDateTimeField(auto_now=True, verbose_name='تاریخ حذف')
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
-        default='یش نویس',
+        default='پیش نویس',
         verbose_name='وضعیت'
     )
+    tags = TaggableManager(through=TaggedPost)
+    categories = TaggableManager(through=CategorizedPost)
 
     objects = models.Manager()
     published = PublishedManager()
@@ -109,12 +145,17 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
+        if self.is_deleted:
+            self.deleted_at = timezone.now()
+
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         for img in self.post_images.all():
-            storage, path = img.image_file.storage, img.image_file.path
-            storage.delete(path)
+            if img.image_file:
+                storage, path = img.image_file.storage, img.image_file.path
+                storage.delete(path)
         super().delete(*args, **kwargs)
 
     def __str__(self):
@@ -127,7 +168,7 @@ class PostImage(models.Model):
         size=[500, 500],
         crop=['middle', 'center'],
         quality=75,
-        upload_to='media/post_images',
+        upload_to='blog_post_img/',
         blank=True,
         verbose_name='تصویر پست'
     )
@@ -144,52 +185,17 @@ class PostImage(models.Model):
         verbose_name_plural = "تصاویر پست ها"
 
     def delete(self, *args, **kwargs):
-        storage, path = self.image_file.storage, self.image_file.path
-        storage.delete(path)
+        if self.image_file:
+            storage = self.image_file.storage
+            name = self.image_file.name
+            storage.delete(name)
         super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.alt if self.alt else "None"
 
 
-class Category(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='categories', verbose_name='پست')
-    name = models.CharField(max_length=250, unique=True)
-    slug = models.SlugField(max_length=250, unique=True, blank=True)
-
-    class Meta:
-        verbose_name = 'دسته بندی پست ها'
-        verbose_name_plural = 'دسته بندی های پست ها'
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super(Category, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
-
-
-class Tag(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='tags', verbose_name='پست')
-    name = models.CharField(max_length=250, unique=True)
-    slug = models.SlugField(max_length=250, unique=True, blank=True)
-
-    class Meta:
-        verbose_name = 'برچسب پست ها'
-        verbose_name_plural = 'برچسب های پست ها'
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super(Tag, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
-
-
 class Comment(models.Model):
-
     STATUS_CHOICES = [
         ('یش نویس', 'پیش نویس'),
         ('منتشر شده', 'منتشر شده'),
@@ -235,13 +241,14 @@ class Ticket(models.Model):
     ]
 
     title = models.CharField(max_length=200, verbose_name='عنوان')
-    description = models.TextField(verbose_name='محتوا')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    content = models.TextField(verbose_name='محتوا')
+    created_at = jmodels.jDateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='tickets_created', verbose_name='نویسنده'
     )
     assigned_to = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='tickets_assigned', null=True, blank=True, verbose_name='مسعول پاسخ'
+        User, on_delete=models.CASCADE, related_name='tickets_assigned', null=True, blank=True,
+        verbose_name='مسعول پاسخ'
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='باز', verbose_name='وضعیت')
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='متوسط', verbose_name='اولویت')
@@ -265,9 +272,9 @@ class Ticket(models.Model):
 
 
 class TicketAttachment(models.Model):
-    file = models.FileField(upload_to='media/ticket_attachments/', verbose_name='پیوست')
+    file = models.FileField(upload_to='ticket_attachments/', verbose_name='پیوست', null=True, blank=True)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='ticket_attachments')
-    alt = models.CharField(max_length=250, blank=True, verbose_name='متن جایگزین')
+    alt = models.CharField(max_length=250, blank=True, verbose_name='متن جایگزین برای پیوست')
     created_at = jmodels.jDateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     deleted_at = jmodels.jDateTimeField(auto_now=True, verbose_name='تاریخ حذف')
 

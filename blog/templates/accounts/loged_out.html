@@ -1,0 +1,12 @@
+{% extends 'parent/base.html' %}
+{% block title %}
+    user-loged-out
+{% endblock %}
+{% block content %}
+    <h2>شما خارج شده اید</h2>
+    <div>
+        <small>
+            <a href="{% url 'blog:log_in' %}">دوباره وارد شوید</a>
+        </small>
+    </div>
+{% endblock content %}

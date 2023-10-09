@@ -1,14 +1,23 @@
 {% extends 'parent/base.html' %}
+
 {% block title %}
     index
 {% endblock %}
+
 {% block content %}
-    <h2>فهرست</h2>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <h2><a href="{% url 'blog:post_detail' slug=post.slug %}">{{ post.title }}</a></h2>
+                    <p>{{ post.content|truncatewords:10 }}</p>
+                    <p>تاریخ انتشار: {{ post.published_at|date:'y/m/d' }}</p>
+                    <p>نویسنده: {{ post.author.username }}</p>
+                </li>
             {% endfor %}
         </ul>
+    {% else %}
+        <p>هیچ پست منتشر شده ای موجود نیست</p>
     {% endif %}
+    {% include 'partials/pagination.html' %}
 {% endblock %}

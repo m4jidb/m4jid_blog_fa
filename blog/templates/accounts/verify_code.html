@@ -1,0 +1,14 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    verify-code
+{% endblock %}
+
+{% block content %}
+    <h2>تایید کد</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">تایید</button>
+    </form>
+{% endblock %}

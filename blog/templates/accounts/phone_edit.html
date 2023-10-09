@@ -1,0 +1,14 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    phone-edit
+{% endblock %}
+
+{% block content %}
+    <h2>تغییر شماره تلفن</h2>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">زخیره تغییرات</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'parent/base.html' %}
+{% block title %}
+    user-check-out
+{% endblock %}
+{% block content %}
+    <h2>خروج</h2>
+    <p>آیا از خروج اطمینان دارید؟</p>
+
+    <form method="post" action="{% url 'blog:log_out' %}">
+        {% csrf_token %}
+        <button type="submit">خروج</button>
+    </form>
+
+    <a href="{% url 'blog:index' %}">لغو</a>
+{% endblock %}

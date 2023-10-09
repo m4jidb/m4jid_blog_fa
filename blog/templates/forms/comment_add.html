@@ -1,0 +1,14 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    post-edit
+{% endblock %}
+
+{% block content %}
+<h2>نظر خود را اضافه کنید</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">افزودن</button>
+</form>
+{% endblock %}

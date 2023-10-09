@@ -1,0 +1,20 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    user-ticket-list
+{% endblock %}
+
+{% block content %}
+    <h1>تیکت های من</h1>
+    {% for ticket in tickets %}
+        <div>
+            <h3><strong>عنوان تیکت : </strong><a href="{% url 'blog:ticket_detail' ticket_id=ticket.id %}">{{ ticket.title }}</a></h3>
+            <p><strong>متن تیکت : </strong>{{ ticket.content|truncatewords:10 }}</p>
+            <p><strong>تاریخ ارسال: </strong>{{ ticket.created_at|date:'y/m/d' }}</p>
+        </div>
+    {% empty %}
+        <p>هیچ تیکتی برای نمایش وجود ندارد</p>
+    {% endfor %}
+    <h3><a href="{% url 'blog:ticket_create' %}">ارسال تیکت جدید</a></h3>
+    {% include 'partials/ticket_pagination.html' %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    user-sign-up
+{% endblock %}
+
+{% block content %}
+    <h2>ثبت نام</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">ثبت نام</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    user-post-list
+{% endblock %}
+
+{% block content %}
+    <h1>پست های من</h1>
+    {% for post in posts %}
+        <div>
+            <h2><a href="{% url 'blog:post_detail' slug=post.slug %}">{{ post.title }}</a></h2>
+            <p>{{ post.content|truncatewords:10 }}</p>
+            <p><strong>تاریخ انتشار: </strong>{{ post.published_at|date:'y/m/d' }}</p>
+            <p><strong>برچسب ها: </strong>{% for tag in post.tags.all %}{{ tag.name }}, {% endfor %}</p>
+            <p><strong>دسته بندی ها: </strong>{% for category in post.categories.all %}{{ category.name }}, {% endfor %}</p>
+        </div>
+    {% empty %}
+        <p>هیچ پستی برای نمایش وجود ندارد</p>
+    {% endfor %}
+    <h3><a href="{% url 'blog:post_create' %}">ایجاد پست جدید</a></h3>
+    {% include 'partials/pagination.html' %}
+{% endblock %}

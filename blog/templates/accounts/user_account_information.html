@@ -1,0 +1,76 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}
+    user-account-information
+{% endblock %}
+
+{% block content %}
+    <h2>اطلاعات حساب کاربری</h2>
+    <div>
+        <strong>نام کاربری:</strong> {{ user.username }}
+        <a href="{% url 'blog:username_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>نام:</strong> {{ user.first_name }}
+        <a href="{% url 'blog:first_name_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>نام خانوادگی:</strong> {{ user.last_name }}
+        <a href="{% url 'blog:last_name_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>ایمیل:</strong> {{ user.email }}
+        <a href="{% url 'blog:email_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>شماره تلفن:</strong> {{ profile.phone }}
+        <a href="{% url 'blog:phone_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>تاریخ تولد:</strong> {{ profile.birthday|date:"Y/m/d" }}
+        <a href="{% url 'blog:date_of_birth_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>آدرس:</strong> {{ profile.address }}
+        <a href="{% url 'blog:address_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>شهر:</strong> {{ profile.city }}
+        <a href="{% url 'blog:city_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>استان:</strong> {{ profile.state }}
+        <a href="{% url 'blog:state_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
+        <strong>کشور:</strong> {{ profile.country }}
+        <a href="{% url 'blog:country_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+
+    <div>
+        <strong>رمز:</strong> **********
+            <a href="{% url 'blog:password_change' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+{% endblock %}
