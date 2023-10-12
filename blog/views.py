@@ -6,7 +6,7 @@ from django.forms import inlineformset_factory
 from .forms import (
     SignUpForm, LogInForm, FirstNameEditForm, LastNameEditForm, BirthdayEditForm, AddressEditForm, CityEditForm,
     StateEditForm, CountryEditForm, UsernameEditForm, PhoneEditForm, CodeVerificationForm, PostCreateForm,
-    EmailEditForm, PostEditForm, PostImageForm, CommentForm, TicketForm, TicketAttachmentForm
+    EmailEditForm, PostEditForm, PostImageForm, CommentForm, TicketForm, TicketAttachmentForm, ProfileImageEditForm
 )
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -15,7 +15,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 import random
-from .models import Post, PostImage, TicketAttachment, Ticket
+from .models import Post, PostImage, TicketAttachment, Ticket, ProfileImage
 
 
 def sign_up_view(request):
@@ -23,10 +23,14 @@ def sign_up_view(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('blog:log_in')
+            return redirect('blog:sign_up_success')
     else:
         form = SignUpForm()
     return render(request, 'accounts/sign_up.html', {'form': form})
+
+
+def sign_up_success_view(request):
+    return render(request, 'accounts/sign_up_success.html')
 
 
 def log_in_view(request):
@@ -36,7 +40,7 @@ def log_in_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('blog:index')
+            return redirect('blog:profile')
         else:
             return HttpResponse('نام کاربری یا رمز عبور نامعتبر است.')
     else:
@@ -74,7 +78,8 @@ def profile_view(request):
 
 @login_required
 def user_account_information_view(request):
-    return render(request, 'accounts/user_account_information.html')
+    profile_images = ProfileImage.objects.filter(profile__user=request.user)
+    return render(request, 'accounts/user_account_information.html', {'profile_images': profile_images})
 
 
 @login_required
@@ -98,6 +103,20 @@ def user_ticket_list_view(request):
 
 
 @login_required
+def profile_image_edit_view(request):
+    if request.method == 'POST':
+        form = ProfileImageEditForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile_image = form.save(commit=False)
+            profile_image.profile = request.user.profile_user
+            profile_image.save()
+            return redirect('blog:user_account_information')
+    else:
+        form = ProfileImageEditForm()
+    return render(request, 'accounts/profile_image_edit.html', {'form': form})
+
+
+@login_required
 def username_edit_view(request):
     if request.method == 'POST':
         form = UsernameEditForm(request.POST, instance=request.user)
@@ -106,7 +125,7 @@ def username_edit_view(request):
             user.username = form.cleaned_data['new_username']
             user.save()
             messages.success(request, 'نام کاربری شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = UsernameEditForm(instance=request.user)
 
@@ -120,7 +139,7 @@ def first_name_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'نام خانوادگی شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = FirstNameEditForm(instance=request.user)
 
@@ -134,7 +153,7 @@ def last_name_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'نام شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = LastNameEditForm(instance=request.user)
 
@@ -182,7 +201,7 @@ def verify_code_view(request):
                 del request.session['new_email']
 
                 messages.success(request, 'تغییر ایمیل با موفقیت انجام شد.')
-                return redirect('blog:profile')
+                return redirect('blog:user_account_information')
             else:
                 messages.error(request, 'کد وارد شده اشتباه است. لطفاً دقت کنید.')
 
@@ -199,7 +218,7 @@ def phone_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'شماره تلفن شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = PhoneEditForm(instance=request.user)
 
@@ -213,7 +232,7 @@ def birthday_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'تاریخ تولد شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = BirthdayEditForm(instance=request.user)
 
@@ -227,7 +246,7 @@ def address_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'آدرس شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = AddressEditForm(instance=request.user)
 
@@ -241,7 +260,7 @@ def city_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'شهر شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = CityEditForm(instance=request.user)
 
@@ -255,7 +274,7 @@ def state_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'استان شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = StateEditForm(instance=request.user)
 
@@ -269,7 +288,7 @@ def country_edit_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'کشور شما با موفقیت به روز شد.')
-            return redirect('blog:profile')
+            return redirect('blog:user_account_information')
     else:
         form = CountryEditForm(instance=request.user)
 

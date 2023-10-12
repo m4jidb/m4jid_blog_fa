@@ -8,6 +8,7 @@ app_name = "blog"
 
 urlpatterns = [
     path('sign-up/', views.sign_up_view, name='sign_up'),
+    path('sign_up_success/', views.sign_up_success_view, name='sign_up_success'),
     path('log-in/', views.log_in_view, name='log_in'),
     path('check-out/', views.check_out_view, name='check_out'),
     path('log-out/', views.log_out_view, name='log_out'),
@@ -16,6 +17,7 @@ urlpatterns = [
     path('user-account-information/', views.user_account_information_view, name='user_account_information'),
     path('user-post-list/', views.user_post_list_view, name='user_post_list'),
     path('user-ticket-list/', views.user_ticket_list_view, name='user_ticket_list'),
+    path('profile-image-edit/', views.profile_image_edit_view, name='profile_image_edit'),
     path('username-edit/', views.username_edit_view, name='username_edit'),
     path('first-name-edit/', views.first_name_edit_view, name='first_name_edit'),
     path('last-name-edit/', views.last_name_edit_view, name='last_name_edit'),

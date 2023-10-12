@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from taggit.forms import TagWidget
-from .models import Profile, Post, PostImage, Comment, Ticket, TicketAttachment
+from .models import Profile, Post, PostImage, Comment, Ticket, TicketAttachment, ProfileImage
 from jalali_date.fields import JalaliDateField
 from jalali_date.widgets import AdminJalaliDateWidget
 
@@ -79,6 +79,12 @@ class LogInForm(forms.Form):
 
     username = forms.CharField(label='نام کاربری یا شماره تلفن', max_length=150)
     password = forms.CharField(label='رمز عبور', widget=forms.PasswordInput)
+
+
+class ProfileImageEditForm(forms.ModelForm):
+    class Meta:
+        model = ProfileImage
+        fields = ['image_file', 'alt']
 
 
 class UsernameEditForm(forms.ModelForm):

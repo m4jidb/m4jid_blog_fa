@@ -49,8 +49,6 @@ G.idea/sonarlint/issuestore/9/f/9f9560753a3e5c777e2281279748008e37d22c37,7\f\7f
 ,blog/templates/accounts/password_change.html,b\5\b5c173426f644826d7759202ca4f19d20589b4d0
 P
  blog/templates/forms/search.html,8\b\8b791f484585175474f8069ba40997d59e1eee7d
-Q
-!blog/templates/forms/comment.html,3\e\3e2ad64137a2b4e97fbc6bb6e0c0d9e26f72eefb
 P
  blog/templates/forms/ticket.html,f\6\f6840841792c42ee1b8da948b14f5321ece49621
 U
@@ -178,3 +176,5 @@ e
 5blog/templates/accounts/user_account_information.html,0\6\06221876746f3c2de52c3584b7eb98e9b2a15b4b
 [
 +blog/templates/accounts/user_post_list.html,b\1\b17f2dfc2fad27dea43b616ee389225802b003b2
+_
+/blog/templates/accounts/profile_image_edit.html,9\9\99d92b9c5113dd53b3bdd46d4f3933aaca0aabf8

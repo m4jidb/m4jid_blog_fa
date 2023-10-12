@@ -7,6 +7,17 @@
 {% block content %}
     <h2>اطلاعات حساب کاربری</h2>
     <div>
+        <strong>تصاویر پروفایل:</strong>
+        {% for profile_image in profile_images %}
+            <img src="{{ profile_image.image_file.url }}" alt="{{ profile_image.alt }}">
+        {% empty %}
+            <p>هیچ تصویری وجود ندارد</p>
+        {% endfor %}
+        <a href="{% url 'blog:profile_image_edit' %}">
+            <button type="button">ویرایش</button>
+        </a>
+    </div>
+    <div>
         <strong>نام کاربری:</strong> {{ user.username }}
         <a href="{% url 'blog:username_edit' %}">
             <button type="button">ویرایش</button>
@@ -31,37 +42,37 @@
         </a>
     </div>
     <div>
-        <strong>شماره تلفن:</strong> {{ profile.phone }}
+        <strong>شماره تلفن:</strong> {{ user.profile_user.phone }}
         <a href="{% url 'blog:phone_edit' %}">
             <button type="button">ویرایش</button>
         </a>
     </div>
     <div>
-        <strong>تاریخ تولد:</strong> {{ profile.birthday|date:"Y/m/d" }}
+        <strong>تاریخ تولد:</strong> {{ user.profile_user.birthday|date:"Y/m/d" }}
         <a href="{% url 'blog:date_of_birth_edit' %}">
             <button type="button">ویرایش</button>
         </a>
     </div>
     <div>
-        <strong>آدرس:</strong> {{ profile.address }}
+        <strong>آدرس:</strong> {{ user.profile_user.address }}
         <a href="{% url 'blog:address_edit' %}">
             <button type="button">ویرایش</button>
         </a>
     </div>
     <div>
-        <strong>شهر:</strong> {{ profile.city }}
+        <strong>شهر:</strong> {{ user.profile_user.city }}
         <a href="{% url 'blog:city_edit' %}">
             <button type="button">ویرایش</button>
         </a>
     </div>
     <div>
-        <strong>استان:</strong> {{ profile.state }}
+        <strong>استان:</strong> {{ user.profile_user.state }}
         <a href="{% url 'blog:state_edit' %}">
             <button type="button">ویرایش</button>
         </a>
     </div>
     <div>
-        <strong>کشور:</strong> {{ profile.country }}
+        <strong>کشور:</strong> {{ user.profile_user.country }}
         <a href="{% url 'blog:country_edit' %}">
             <button type="button">ویرایش</button>
         </a>

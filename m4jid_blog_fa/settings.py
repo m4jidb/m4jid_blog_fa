@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from .local_setting import *
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = ['*']
