@@ -178,3 +178,5 @@ e
 +blog/templates/accounts/user_post_list.html,b\1\b17f2dfc2fad27dea43b616ee389225802b003b2
 _
 /blog/templates/accounts/profile_image_edit.html,9\9\99d92b9c5113dd53b3bdd46d4f3933aaca0aabf8
+\
+,blog/templates/accounts/sign_up_success.html,d\4\d42feb8dc38241bab8e3ff2b43373543a19a61d7

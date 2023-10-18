@@ -72,11 +72,11 @@ WSGI_APPLICATION = 'm4jid_blog_fa.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'm4jid_blog_fa_db',
-        'USER': 'm4jidb',
-        'PASSWORD': '167254389',
-        'HOST': 'localhost',
-        'PORT': '5433',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
 
